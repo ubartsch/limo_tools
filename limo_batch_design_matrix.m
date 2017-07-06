@@ -54,9 +54,9 @@ if strcmp(LIMO.Analysis,'Time')
                 error('to run component clustering, you need the EEGLAB study loaded in the workspace with the clustering computed and saved')
             end
             nb_clusters = size(STUDY.cluster(1).child,2);
-            nb_subjects = length({STUDY.datasetinfo.subject}); % length(unique({STUDY.datasetinfo.subject}));
+            nb_subjects = length(unique({STUDY.datasetinfo.subject})); % length({STUDY.datasetinfo.subject}); 
             Cluster_matrix = parse_clustinfo(STUDY,STUDY.cluster(1).name);
-            dsetinfo = rel2fullpath(STUDY.filepath,{STUDY.datasetinfo.filepath}');
+            dsetinfo = unique(rel2fullpath(STUDY.filepath,{STUDY.datasetinfo.filepath}'));
             data_dir = rel2fullpath(STUDY.filepath,LIMO.data.data_dir(1:end));
             current_subject = find(cellfun(@strcmp, dsetinfo',repmat({data_dir},nb_subjects,1)));
             subject_name = {STUDY.datasetinfo(current_subject(1)).subject};
@@ -69,7 +69,7 @@ if strcmp(LIMO.Analysis,'Time')
                     if length(which_ics)==1
                         newY(c,:,:) =  Y(which_ics,:,:);
                     else
-                        newY(c,:,:) = limo_combine_components(Y,EEGLIMO.icaweights*EEGLIMO.icasphere,EEGLIMO.icawinv,which_ics);
+                        newY(c,:,:) = limo_combine_components(STUDY,c+1,subject_name,Y,EEGLIMO.icaweights,EEGLIMO.icawinv,which_ics);
                     end
                 end
             end

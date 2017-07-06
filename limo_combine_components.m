@@ -18,14 +18,20 @@ function combined_ica = limo_combine_components(varargin)
 %  Copyright (C) LIMO Team 2010
 
 %% check data orientation
-data       = varargin{1};
-weights    = varargin{2};
-invweights = varargin{3};
-whichic    = varargin{4};
-if nargin == 4
-    method = 'maxvar';
-elseif nargin == 5
-    method = varargin{5};
+STUDY        = varargin{1};
+clsindx      = varargin{2};
+subject_name = varargin{3};
+data         = varargin{4};
+weights      = varargin{5};
+invweights   = varargin{6};
+whichic      = varargin{7};
+
+
+% Setting default method
+if nargin == 7
+    method = 'closercentroid';
+elseif nargin == 7
+    method = varargin{8};
 end
 clear varargin
 nb_comp = size(data,1);
@@ -57,6 +63,12 @@ switch method
         end
         [tmp ind] = max(varica);
         combined_ica = data(ind,:,:);
+        
+    case ('closercentroid')
+        [all_ickeepindx,ickeep_sub,datasetinfo_first] = limo_reducecluster(STUDY,clsindx);
+        subjindxtmp = find(strcmp(ickeep_sub,subject_name));
+        ickeepindx = all_ickeepindx(subjindxtmp);
+        combined_ica = data(ickeepindx,:,:);
 end
 
 
