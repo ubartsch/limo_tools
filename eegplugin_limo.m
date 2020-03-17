@@ -22,6 +22,7 @@ if ~exist('pop_loadeep')
     p = p(1:findstr(p,'eegplugin_limo.m')-1);
     addpath( p );
     addpath( fullfile(p, 'external') );
+    addpath( fullfile(p, 'limo_cluster_functions') );
 end
 
 % create menus
